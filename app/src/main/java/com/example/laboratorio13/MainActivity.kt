@@ -3,9 +3,8 @@ package com.example.laboratorio13
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
@@ -23,45 +22,43 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             Laboratorio13Theme {
-                VisibilityAnimationExample()
+                ColorAnimationExample()
             }
         }
     }
 }
 
 @Composable
-fun VisibilityAnimationExample() {
-    var isVisible by remember { mutableStateOf(false) }
+fun ColorAnimationExample() {
+    var isBlue by remember { mutableStateOf(true) }
+    val backgroundColor by animateColorAsState(
+        targetValue = if (isBlue) Color.Blue else Color.Green,
+        animationSpec = tween(durationMillis = 1000)
+    )
 
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Button(onClick = { isVisible = !isVisible }) {
-            Text(text = if (isVisible) "Hide" else "Show")
+        Button(onClick = { isBlue = !isBlue }) {
+            Text(text = "Change Color")
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        AnimatedVisibility(
-            visible = isVisible,
-            enter = fadeIn(),
-            exit = fadeOut()
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(100.dp)
-                    .background(Color.Red)
-            )
-        }
+        Box(
+            modifier = Modifier
+                .size(100.dp)
+                .background(backgroundColor)
+        )
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun VisibilityAnimationExamplePreview() {
+fun ColorAnimationExamplePreview() {
     Laboratorio13Theme {
-        VisibilityAnimationExample()
+        ColorAnimationExample()
     }
 }
