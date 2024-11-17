@@ -3,7 +3,7 @@ package com.example.laboratorio13
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -22,17 +22,21 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             Laboratorio13Theme {
-                ColorAnimationExample()
+                SizeAndPositionAnimationExample()
             }
         }
     }
 }
 
 @Composable
-fun ColorAnimationExample() {
-    var isBlue by remember { mutableStateOf(true) }
-    val backgroundColor by animateColorAsState(
-        targetValue = if (isBlue) Color.Blue else Color.Green,
+fun SizeAndPositionAnimationExample() {
+    var isExpanded by remember { mutableStateOf(false) }
+    val size by animateDpAsState(
+        targetValue = if (isExpanded) 200.dp else 100.dp,
+        animationSpec = tween(durationMillis = 1000)
+    )
+    val offset by animateDpAsState(
+        targetValue = if (isExpanded) 100.dp else 0.dp,
         animationSpec = tween(durationMillis = 1000)
     )
 
@@ -41,24 +45,25 @@ fun ColorAnimationExample() {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Button(onClick = { isBlue = !isBlue }) {
-            Text(text = "Change Color")
+        Button(onClick = { isExpanded = !isExpanded }) {
+            Text(text = "Animate")
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
         Box(
             modifier = Modifier
-                .size(100.dp)
-                .background(backgroundColor)
+                .size(size)
+                .offset(x = offset, y = offset)
+                .background(Color.Red)
         )
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun ColorAnimationExamplePreview() {
+fun SizeAndPositionAnimationExamplePreview() {
     Laboratorio13Theme {
-        ColorAnimationExample()
+        SizeAndPositionAnimationExample()
     }
 }
